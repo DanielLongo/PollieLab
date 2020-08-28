@@ -4,14 +4,14 @@ import numpy as np
 
 
 def main():
+    red = [0, 0, 255]
     cap = cv2.VideoCapture(0)
     greenLower = (0, 0, 0)
-    greenUpper = (30, 30, 30)
+    greenUpper = (20, 20, 20)
     min_radius = 5
     pollies = []
     num_pollies = 5
     while (True):
-        old_pollies = pollies
         # Capture frame-by-frame
         ret, frame = cap.read()
 
@@ -28,8 +28,6 @@ def main():
         mask = cv2.erode(mask, None, iterations=2)
         mask = cv2.dilate(mask, None, iterations=2)
 
-        # Display the resulting frame
-        cv2.imshow('frame', mask)
 
         cnts = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL,
                                 cv2.CHAIN_APPROX_SIMPLE)
@@ -47,6 +45,12 @@ def main():
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
+
+        for pollie in pollies:
+            center = pollie[1]
+            frame[center[0] - 5 : center[0] + 5, center[1] - 5: center[1] + 5] = red
+        # Display the resulting frame
+        cv2.imshow('frame', frame)
 
     # When everything done, release the capture
     cap.release()
